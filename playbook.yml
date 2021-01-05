@@ -1,0 +1,48 @@
+---
+- hosts: all
+  become: true
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+    # Install Packages
+    - name: Update apt
+      apt: update_cache=yes
+
+    - name: Install required system packages
+      apt: name={{ packages }} state=latest
+
+    # Setup server
+    - name: Set time zone
+      community.general.timezone:
+        name: "{{ time_zone }}"
+
+    - name: Disable root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin no'
+
+    - name: Disable password authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+
+    # Add User
+    - name: Create a new user
+      user:
+        name: "{{ new_user }}"
+        state: present
+        append: true
+        create_home: true
+        groups: [ "sudo" ]
+        shell: /usr/bin/fish
+
+    - name: Set authorized key for the new user
+      authorized_key:
+        user: "{{ new_user }}"
+        state: present
+        key: "{{ local_key }}"
