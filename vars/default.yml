@@ -1,5 +1,5 @@
 ---
 new_user: v
 local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
-packages: [ "curl", "vim", "fail2ban", "fish", "tzdata" ]
+packages: [ "curl", "vim", "fail2ban", "fish", "tzdata", "sudo" ]
 time_zone: "Asia/Yekaterinburg"

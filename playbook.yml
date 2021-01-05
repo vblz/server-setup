@@ -6,11 +6,10 @@
 
   tasks:
     # Install Packages
-    - name: Update apt
-      apt: update_cache=yes
-
-    - name: Install required system packages
-      apt: name={{ packages }} state=latest
+    - name: Install required packages
+      package:
+        name: "{{ packages }}"
+        state: latest
 
     # Setup server
     - name: Set time zone
@@ -38,7 +37,7 @@
         state: present
         append: true
         create_home: true
-        groups: [ "sudo" ]
+        groups: [ "{{ 'sudo' if ansible_distribution == 'Ubuntu' else 'wheel' }}" ]
         shell: /usr/bin/fish
 
     - name: Disable password
