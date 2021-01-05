@@ -41,6 +41,14 @@
         groups: [ "sudo" ]
         shell: /usr/bin/fish
 
+    - name: Disable password
+      shell:
+        cmd: passwd -d "{{ new_user }}"
+
+    - name: Expire password
+      shell:
+        cmd: passwd -e "{{ new_user }}"
+
     - name: Set authorized key for the new user
       authorized_key:
         user: "{{ new_user }}"
